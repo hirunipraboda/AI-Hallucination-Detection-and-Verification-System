@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,39 +7,58 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
+import { getAllSources } from '../services/sourceService';
 
-// 💡 This is our DUMMY DATA - fake sources so the screen looks real
-// Later we'll replace this with real data from MongoDB
-const DUMMY_SOURCES = [
-  { id: '1', name: 'PubMed Central', category: 'ACADEMIC', score: 98, verified: true },
-  { id: '2', name: 'Data.gov', category: 'GOVERNMENT', score: 95, verified: true },
-  { id: '3', name: 'Reuters', category: 'TRUSTED WEB', score: 92, verified: true },
-  { id: '4', name: 'WHO', category: 'GOVERNMENT', score: 90, verified: true },
-  { id: '5', name: 'MIT Tech Review', category: 'ACADEMIC', score: 87, verified: true },
-];
-
-// 💡 The filter categories shown at the top
-const FILTERS = ['All', 'Academic', 'Government', 'Trusted Web'];
+const FILTERS = ['All', 'Academic', 'Government', 'Trusted Web', 'News', 'Other'];
 
 export default function SourcesListScreen({ navigation }) {
-  // 💡 useState is how we store data that can change
-  // searchText stores what the user types in the search bar
   const [searchText, setSearchText] = useState('');
-  // activeFilter stores which filter tab is selected
   const [activeFilter, setActiveFilter] = useState('All');
+  const [sources, setSources] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 💡 This filters the sources based on search and selected filter
-  const filteredSources = DUMMY_SOURCES.filter(source => {
-    const matchesSearch = source.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchesFilter = activeFilter === 'All' || 
-                          source.category.toLowerCase().includes(activeFilter.toLowerCase());
+  // 💡 useEffect runs when the screen loads
+  // We use it to fetch sources from the backend
+  useEffect(() => {
+    fetchSources();
+  }, []);
+
+  // 💡 This also runs when we come back to this screen
+  // So if we add a new source, the list refreshes!
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchSources();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const fetchSources = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllSources();
+      setSources(data);
+    } catch (error) {
+      Alert.alert('Error', 'Could not load sources. Is your backend running?');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredSources = sources.filter(source => {
+    const name = source.sourceName || '';
+    const category = source.sourceCategory || '';
+    const matchesSearch = name.toLowerCase().includes(searchText.toLowerCase());
+    const matchesFilter = activeFilter === 'All' ||
+                          category.toLowerCase().includes(activeFilter.toLowerCase());
     return matchesSearch && matchesFilter;
   });
 
   return (
     <SafeAreaView style={styles.container}>
-      
+
       {/* HEADER */}
       <View style={styles.header}>
         <View>
@@ -64,8 +83,8 @@ export default function SourcesListScreen({ navigation }) {
       </View>
 
       {/* FILTER TABS */}
-      <ScrollView 
-        horizontal 
+      <ScrollView
+        horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.filterContainer}
       >
@@ -82,54 +101,62 @@ export default function SourcesListScreen({ navigation }) {
         ))}
       </ScrollView>
 
-      {/* SOURCE CARDS LIST */}
-      <ScrollView style={styles.sourcesList}>
-        {filteredSources.map(source => (
-          <TouchableOpacity 
-            key={source.id} 
-            style={styles.sourceCard}
-            onPress={() => navigation.navigate('SourceDetail', { source })}
->
-            
-            {/* Source Logo Placeholder */}
-            <View style={styles.sourceLogo}>
-              <Text style={styles.sourceLogoText}>
-                {source.name.charAt(0)}
-              </Text>
-            </View>
-
-            {/* Source Info */}
-            <View style={styles.sourceInfo}>
-              <View style={styles.sourceNameRow}>
-                <Text style={styles.sourceName}>{source.name}</Text>
-                {source.verified && <Text style={styles.verifiedBadge}>✓</Text>}
+      {/* LOADING or SOURCE CARDS */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#9b59b6" style={{ marginTop: 50 }} />
+      ) : filteredSources.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No sources found</Text>
+          <Text style={styles.emptySubtext}>Tap + to add a new source</Text>
+        </View>
+      ) : (
+        <ScrollView style={styles.sourcesList}>
+          {filteredSources.map(source => (
+            <TouchableOpacity
+              key={source._id}
+              style={styles.sourceCard}
+              onPress={() => navigation.navigate('SourceDetail', { source })}
+            >
+              <View style={styles.sourceLogo}>
+                <Text style={styles.sourceLogoText}>
+                  {source.sourceName ? source.sourceName.charAt(0) : '?'}
+                </Text>
               </View>
-              <Text style={styles.sourceCategory}>{source.category}</Text>
-            </View>
 
-            {/* Credibility Score */}
-            <View style={styles.scoreContainer}>
-              <Text style={styles.scoreText}>{source.score}</Text>
-            </View>
+              <View style={styles.sourceInfo}>
+                <View style={styles.sourceNameRow}>
+                  <Text style={styles.sourceName}>{source.sourceName}</Text>
+                  {source.status === 'verified' && (
+                    <Text style={styles.verifiedBadge}>✓</Text>
+                  )}
+                </View>
+                <Text style={styles.sourceCategory}>
+                  {source.status?.toUpperCase()}
+                </Text>
+              </View>
 
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+              <View style={styles.scoreContainer}>
+                <Text style={styles.scoreText}>{source.overallScore}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
 
-      {/* FAB BUTTON (+ button) */}
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('AddSource')}>
-  <Text style={styles.fabText}>+</Text>
-</TouchableOpacity>
+      {/* FAB BUTTON */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate('AddSource')}
+      >
+        <Text style={styles.fabText}>+</Text>
+      </TouchableOpacity>
 
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1a1a2e',
-  },
+  container: { flex: 1, backgroundColor: '#1a1a2e' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -138,27 +165,14 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 15,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#9b59b6',
-    marginTop: 2,
-  },
+  title: { fontSize: 32, fontWeight: 'bold', color: '#ffffff' },
+  subtitle: { fontSize: 14, color: '#9b59b6', marginTop: 2 },
   shieldButton: {
-    width: 45,
-    height: 45,
-    borderRadius: 22,
+    width: 45, height: 45, borderRadius: 22,
     backgroundColor: '#2a2a3e',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
   },
-  shieldIcon: {
-    fontSize: 20,
-  },
+  shieldIcon: { fontSize: 20 },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -169,40 +183,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 15,
   },
-  searchIcon: {
-    fontSize: 16,
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    color: '#ffffff',
-    fontSize: 15,
-  },
-  filterContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 15,
-  },
+  searchIcon: { fontSize: 16, marginRight: 10 },
+  searchInput: { flex: 1, color: '#ffffff', fontSize: 15 },
+  filterContainer: { paddingHorizontal: 20, marginBottom: 15 },
   filterTab: {
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#2a2a3e',
-    marginRight: 10,
+    paddingHorizontal: 18, paddingVertical: 8,
+    borderRadius: 20, backgroundColor: '#2a2a3e', marginRight: 10,
   },
-  activeFilterTab: {
-    backgroundColor: '#9b59b6',
-  },
-  filterText: {
-    color: '#888',
-    fontSize: 14,
-  },
-  activeFilterText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-  },
-  sourcesList: {
-    paddingHorizontal: 20,
-  },
+  activeFilterTab: { backgroundColor: '#9b59b6' },
+  filterText: { color: '#888', fontSize: 14 },
+  activeFilterText: { color: '#ffffff', fontWeight: 'bold' },
+  sourcesList: { paddingHorizontal: 20 },
   sourceCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -212,72 +203,32 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sourceLogo: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
+    width: 50, height: 50, borderRadius: 10,
     backgroundColor: '#9b59b6',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
     marginRight: 15,
   },
-  sourceLogoText: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  sourceInfo: {
-    flex: 1,
-  },
-  sourceNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  sourceName: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 6,
-  },
-  verifiedBadge: {
-    color: '#9b59b6',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  sourceCategory: {
-    color: '#9b59b6',
-    fontSize: 12,
-    marginTop: 3,
-    fontWeight: '600',
-  },
+  sourceLogoText: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
+  sourceInfo: { flex: 1 },
+  sourceNameRow: { flexDirection: 'row', alignItems: 'center' },
+  sourceName: { color: '#ffffff', fontSize: 16, fontWeight: 'bold', marginRight: 6 },
+  verifiedBadge: { color: '#9b59b6', fontSize: 16, fontWeight: 'bold' },
+  sourceCategory: { color: '#9b59b6', fontSize: 12, marginTop: 3, fontWeight: '600' },
   scoreContainer: {
-    width: 55,
-    height: 55,
-    borderRadius: 27,
-    borderWidth: 3,
-    borderColor: '#9b59b6',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 55, height: 55, borderRadius: 27,
+    borderWidth: 3, borderColor: '#9b59b6',
+    alignItems: 'center', justifyContent: 'center',
   },
-  scoreText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  scoreText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold' },
   fab: {
-    position: 'absolute',
-    bottom: 30,
-    right: 25,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    position: 'absolute', bottom: 30, right: 25,
+    width: 60, height: 60, borderRadius: 30,
     backgroundColor: '#9b59b6',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
     elevation: 5,
   },
-  fabText: {
-    color: '#ffffff',
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
+  fabText: { color: '#ffffff', fontSize: 30, fontWeight: 'bold' },
+  emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 80 },
+  emptyText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold' },
+  emptySubtext: { color: '#888', fontSize: 14, marginTop: 8 },
 });

@@ -8,36 +8,51 @@ import {
   SafeAreaView,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
+import { createSource } from '../services/sourceService';
 
-// 💡 The categories a user can pick from
 const CATEGORIES = ['Academic', 'Government', 'Trusted Web', 'News', 'Other'];
 
 export default function AddSourceScreen({ navigation }) {
-  // 💡 useState stores the form data as the user types
-  const [name, setName] = useState('');
-  const [url, setUrl] = useState('');
-  const [description, setDescription] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [sourceName, setSourceName] = useState('');
+  const [sourceURL, setSourceURL] = useState('');
+  const [sourceCategory, setSourceCategory] = useState('');
+  const [authorityScore, setAuthorityScore] = useState('50');
+  const [accuracyScore, setAccuracyScore] = useState('50');
+  const [recencyScore, setRecencyScore] = useState('50');
+  const [loading, setLoading] = useState(false);
 
-  // 💡 This runs when the user taps "Add Source"
-  const handleAddSource = () => {
-    // Check if required fields are filled
-    if (!name || !url || !selectedCategory) {
+  const handleAddSource = async () => {
+    if (!sourceName || !sourceURL || !sourceCategory) {
       Alert.alert('Missing Fields', 'Please fill in Name, URL and Category!');
       return;
     }
 
-    // For now we just show a success message
-    // Later we'll save this to MongoDB
-    Alert.alert('Success! ✅', `${name} has been added as a source!`, [
-      { text: 'OK', onPress: () => navigation.goBack() }
-    ]);
+    try {
+      setLoading(true);
+      await createSource({
+        sourceName,
+        sourceURL,
+        sourceCategory,
+        authorityScore: Number(authorityScore),
+        accuracyScore: Number(accuracyScore),
+        recencyScore: Number(recencyScore),
+      });
+
+      Alert.alert('Success! ✅', `${sourceName} has been added!`, [
+        { text: 'OK', onPress: () => navigation.goBack() }
+      ]);
+    } catch (error) {
+      Alert.alert('Error', 'Could not add source. Is your backend running?');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      
+
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -49,77 +64,96 @@ export default function AddSourceScreen({ navigation }) {
 
       <ScrollView style={styles.form}>
 
-        {/* NAME INPUT */}
+        {/* SOURCE NAME */}
         <Text style={styles.label}>Source Name *</Text>
         <TextInput
           style={styles.input}
           placeholder="e.g. PubMed Central"
           placeholderTextColor="#888"
-          value={name}
-          onChangeText={setName}
+          value={sourceName}
+          onChangeText={setSourceName}
         />
 
-        {/* URL INPUT */}
+        {/* URL */}
         <Text style={styles.label}>URL *</Text>
         <TextInput
           style={styles.input}
           placeholder="e.g. https://pubmed.ncbi.nlm.nih.gov"
           placeholderTextColor="#888"
-          value={url}
-          onChangeText={setUrl}
+          value={sourceURL}
+          onChangeText={setSourceURL}
           autoCapitalize="none"
         />
 
-        {/* DESCRIPTION INPUT */}
-        <Text style={styles.label}>Description</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          placeholder="Brief description of this source..."
-          placeholderTextColor="#888"
-          value={description}
-          onChangeText={setDescription}
-          multiline
-          numberOfLines={4}
-        />
-
-        {/* CATEGORY SELECTOR */}
+        {/* CATEGORY */}
         <Text style={styles.label}>Category *</Text>
         <View style={styles.categoryContainer}>
           {CATEGORIES.map(cat => (
             <TouchableOpacity
               key={cat}
-              style={[
-                styles.categoryChip,
-                selectedCategory === cat && styles.activeCategoryChip
-              ]}
-              onPress={() => setSelectedCategory(cat)}
+              style={[styles.categoryChip, sourceCategory === cat && styles.activeCategoryChip]}
+              onPress={() => setSourceCategory(cat)}
             >
-              <Text style={[
-                styles.categoryChipText,
-                selectedCategory === cat && styles.activeCategoryChipText
-              ]}>
+              <Text style={[styles.categoryChipText, sourceCategory === cat && styles.activeCategoryChipText]}>
                 {cat}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
+        {/* AUTHORITY SCORE */}
+        <Text style={styles.label}>Authority Score (0-100)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="50"
+          placeholderTextColor="#888"
+          value={authorityScore}
+          onChangeText={setAuthorityScore}
+          keyboardType="numeric"
+        />
+
+        {/* ACCURACY SCORE */}
+        <Text style={styles.label}>Accuracy Score (0-100)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="50"
+          placeholderTextColor="#888"
+          value={accuracyScore}
+          onChangeText={setAccuracyScore}
+          keyboardType="numeric"
+        />
+
+        {/* RECENCY SCORE */}
+        <Text style={styles.label}>Recency Score (0-100)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="50"
+          placeholderTextColor="#888"
+          value={recencyScore}
+          onChangeText={setRecencyScore}
+          keyboardType="numeric"
+        />
+
         {/* SUBMIT BUTTON */}
-        <TouchableOpacity style={styles.addButton} onPress={handleAddSource}>
-          <Text style={styles.addButtonText}>+ Add Source</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleAddSource}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#ffffff" />
+          ) : (
+            <Text style={styles.addButtonText}>+ Add Source</Text>
+          )}
         </TouchableOpacity>
 
       </ScrollView>
-
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1a1a2e',
-  },
+  container: { flex: 1, backgroundColor: '#1a1a2e' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -128,27 +162,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 15,
   },
-  backButton: {
-    color: '#9b59b6',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  title: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  form: {
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
-  label: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-    marginTop: 15,
-  },
+  backButton: { color: '#9b59b6', fontSize: 16, fontWeight: '600' },
+  title: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
+  form: { paddingHorizontal: 20, marginTop: 10 },
+  label: { color: '#ffffff', fontSize: 14, fontWeight: '600', marginBottom: 8, marginTop: 15 },
   input: {
     backgroundColor: '#2a2a3e',
     borderRadius: 12,
@@ -158,36 +175,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#3a3a5e',
   },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginTop: 5,
-  },
+  categoryContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 5 },
   categoryChip: {
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 20,
-    backgroundColor: '#2a2a3e',
-    borderWidth: 1,
-    borderColor: '#3a3a5e',
+    paddingHorizontal: 18, paddingVertical: 10,
+    borderRadius: 20, backgroundColor: '#2a2a3e',
+    borderWidth: 1, borderColor: '#3a3a5e',
   },
-  activeCategoryChip: {
-    backgroundColor: '#9b59b6',
-    borderColor: '#9b59b6',
-  },
-  categoryChipText: {
-    color: '#888',
-    fontSize: 14,
-  },
-  activeCategoryChipText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-  },
+  activeCategoryChip: { backgroundColor: '#9b59b6', borderColor: '#9b59b6' },
+  categoryChipText: { color: '#888', fontSize: 14 },
+  activeCategoryChipText: { color: '#ffffff', fontWeight: 'bold' },
   addButton: {
     backgroundColor: '#9b59b6',
     borderRadius: 12,
@@ -196,9 +192,5 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 40,
   },
-  addButtonText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  addButtonText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold' },
 });
