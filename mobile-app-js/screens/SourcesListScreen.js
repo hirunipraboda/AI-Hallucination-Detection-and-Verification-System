@@ -48,14 +48,12 @@ export default function SourcesListScreen({ navigation }) {
   };
 
   const filteredSources = sources.filter(source => {
-    const name = source.sourceName || '';
-    const category = source.sourceCategory || '';
-    const matchesSearch = name.toLowerCase().includes(searchText.toLowerCase());
+    const matchesSearch = (source.sourceName || '').toLowerCase().includes(searchText.toLowerCase());
     const matchesFilter = activeFilter === 'All' ||
-                          category.toLowerCase().includes(activeFilter.toLowerCase());
+                          (source.sourceCategory || '').toLowerCase() === activeFilter.toLowerCase();
     return matchesSearch && matchesFilter;
   });
-
+  
   return (
     <SafeAreaView style={styles.container}>
 

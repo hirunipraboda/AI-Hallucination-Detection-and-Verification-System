@@ -33,15 +33,15 @@ router.post('/', async (req, res) => {
 
     // Save to source_credibility
     const sourceCredibility = new SourceCredibility({
-      sourceName,
-      authorityScore,
-      accuracyScore,
-      recencyScore,
-      overallScore,
-      status: overallScore >= 70 ? 'verified' : 'unverified',
-    });
+  sourceName,
+  sourceCategory,
+  authorityScore,
+  accuracyScore,
+  recencyScore,
+  overallScore,
+  status: overallScore >= 70 ? 'verified' : 'unverified',
+});
     const savedCredibility = await sourceCredibility.save();
-
     // Save to evidence_sources
     const evidenceSource = new EvidenceSource({
       sourceTitle: sourceName,

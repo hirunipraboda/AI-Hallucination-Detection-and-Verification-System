@@ -38,6 +38,11 @@ const sourceCredibilitySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  sourceCategory: {
+    type: String,
+    default: 'Other',
+    enum: ['Academic', 'Government', 'Trusted Web', 'News', 'Other'],
+  },
   authorityScore: {
     type: Number,
     default: 50,
