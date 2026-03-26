@@ -38,6 +38,10 @@ const sourceCredibilitySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  sourceURL: {
+    type: String,
+    required: true,
+  },
   sourceCategory: {
     type: String,
     default: 'Other',

@@ -53,6 +53,12 @@ export default function SourcesListScreen({ navigation }) {
                           (source.sourceCategory || '').toLowerCase() === activeFilter.toLowerCase();
     return matchesSearch && matchesFilter;
   });
+
+  const getStatusColor = (status) => {
+    if (status === 'verified') return '#2ecc71';
+    if (status === 'unreliable') return '#e74c3c';
+    return '#f39c12';
+  };
   
   return (
     <SafeAreaView style={styles.container}>
@@ -129,7 +135,9 @@ export default function SourcesListScreen({ navigation }) {
                   )}
                 </View>
                 <Text style={styles.sourceCategory}>
-                  {source.status?.toUpperCase()}
+                  <Text style={{ color: getStatusColor(source.status) }}>
+                    {source.status?.toUpperCase()}
+                  </Text>
                 </Text>
               </View>
 

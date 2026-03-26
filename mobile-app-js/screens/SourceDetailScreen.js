@@ -29,8 +29,21 @@ export default function SourceDetailScreen({ navigation, route }) {
   };
 
   const risk = getRiskLevel(currentSource.overallScore);
+  const statusView = (() => {
+    if (currentSource.status === 'verified') {
+      return { label: '✓ Verified', color: '#2ecc71', bg: '#2ecc7122' };
+    }
+    if (currentSource.status === 'unreliable') {
+      return { label: '✕ Unreliable', color: '#e74c3c', bg: '#e74c3c22' };
+    }
+    return { label: '⚠ Unverified', color: '#f39c12', bg: '#f39c1222' };
+  })();
 
   const handleDelete = () => {
+    if (currentSource.status !== 'unreliable') {
+      Alert.alert('Delete restricted', 'You can only delete unreliable sources for this module.');
+      return;
+    }
     Alert.alert(
       'Delete Source',
       `Are you sure you want to delete ${currentSource.sourceName}?`,
@@ -89,9 +102,13 @@ export default function SourceDetailScreen({ navigation, route }) {
           <Text style={styles.backButton}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Source Details</Text>
-        <TouchableOpacity onPress={handleDelete}>
-          <Text style={styles.deleteButton}>🗑️</Text>
-        </TouchableOpacity>
+        {currentSource.status === 'unreliable' ? (
+          <TouchableOpacity onPress={handleDelete}>
+            <Text style={styles.deleteButton}>🗑️</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={{ width: 22 }} />
+        )}
       </View>
 
       {loading && <ActivityIndicator color="#9b59b6" style={{ marginBottom: 10 }} />}
@@ -109,9 +126,9 @@ export default function SourceDetailScreen({ navigation, route }) {
           <View style={styles.categoryBadge}>
             <Text style={styles.categoryText}>{currentSource.sourceCategory}</Text>
           </View>
-          <View style={[styles.statusBadge, { backgroundColor: currentSource.status === 'verified' ? '#2ecc7122' : '#e74c3c22' }]}>
-            <Text style={[styles.statusText, { color: currentSource.status === 'verified' ? '#2ecc71' : '#e74c3c' }]}>
-              {currentSource.status === 'verified' ? '✓ Verified' : '⚠ Unverified'}
+          <View style={[styles.statusBadge, { backgroundColor: statusView.bg }]}>
+            <Text style={[styles.statusText, { color: statusView.color }]}>
+              {statusView.label}
             </Text>
           </View>
         </View>
