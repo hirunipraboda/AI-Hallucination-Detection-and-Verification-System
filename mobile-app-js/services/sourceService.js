@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 💡 Your computer's IP address
-const BASE_URL = 'https://prothoracic-holily-camila.ngrok-free.dev/api';
+const BASE_URL = 'https://prothoracic-holily-camila.ngrok-free.dev ';
 
 const api = axios.create({
   baseURL: BASE_URL,

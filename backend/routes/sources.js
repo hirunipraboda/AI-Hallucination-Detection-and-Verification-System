@@ -228,7 +228,10 @@ router.delete('/:id', async (req, res) => {
       }
       return res.json({ message: 'Source deleted successfully' });
     }
-
+    
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+  return res.status(400).json({ message: 'Invalid source ID format' });
+   }
     const existing = await SourceCredibility.findById(req.params.id);
     if (!existing) {
       return res.status(404).json({ message: 'Source not found' });
