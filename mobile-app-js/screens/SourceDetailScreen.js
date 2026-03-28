@@ -111,7 +111,7 @@ export default function SourceDetailScreen({ navigation, route }) {
         )}
       </View>
 
-      {loading && <ActivityIndicator color="#9b59b6" style={{ marginBottom: 10 }} />}
+      {loading && <ActivityIndicator color="#00d4aa" style={{ marginBottom: 10 }} />}
 
       <ScrollView style={styles.content}>
 
@@ -220,36 +220,36 @@ export default function SourceDetailScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+  container: { flex: 1, backgroundColor: '#0a0f1e' },
   header: {
     flexDirection: 'row', alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20, paddingTop: 20, paddingBottom: 15,
   },
-  backButton: { color: '#9b59b6', fontSize: 16, fontWeight: '600' },
+  backButton: { color: '#00d4aa', fontSize: 16, fontWeight: '600' },
   title: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
   deleteButton: { fontSize: 22 },
   content: { paddingHorizontal: 20 },
   identityCard: {
-    backgroundColor: '#2a2a3e', borderRadius: 15,
+    backgroundColor: '#111827', borderRadius: 15,
     padding: 20, alignItems: 'center', marginBottom: 15,
   },
   logoCircle: {
     width: 80, height: 80, borderRadius: 40,
-    backgroundColor: '#9b59b6',
+    backgroundColor: '#00d4aa',
     alignItems: 'center', justifyContent: 'center', marginBottom: 12,
   },
-  logoText: { color: '#ffffff', fontSize: 36, fontWeight: 'bold' },
+  logoText: { color: '#000000', fontSize: 36, fontWeight: 'bold' },
   sourceName: { color: '#ffffff', fontSize: 22, fontWeight: 'bold', marginBottom: 8 },
   categoryBadge: {
-    backgroundColor: '#9b59b633', paddingHorizontal: 14,
+    backgroundColor: '#00d4aa22', paddingHorizontal: 14,
     paddingVertical: 5, borderRadius: 20, marginBottom: 8,
   },
-  categoryText: { color: '#9b59b6', fontSize: 13, fontWeight: '600' },
+  categoryText: { color: '#00d4aa', fontSize: 13, fontWeight: '600' },
   statusBadge: { paddingHorizontal: 14, paddingVertical: 5, borderRadius: 20 },
   statusText: { fontSize: 13, fontWeight: '600' },
   scoreCard: {
-    backgroundColor: '#2a2a3e', borderRadius: 15,
+    backgroundColor: '#111827', borderRadius: 15,
     padding: 20, alignItems: 'center', marginBottom: 15,
   },
   sectionTitle: {
@@ -262,13 +262,13 @@ const styles = StyleSheet.create({
   riskBadge: { paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20 },
   riskText: { fontSize: 14, fontWeight: 'bold' },
   detailsCard: {
-    backgroundColor: '#2a2a3e', borderRadius: 15,
+    backgroundColor: '#111827', borderRadius: 15,
     padding: 20, marginBottom: 15,
   },
   scoreRow: {
     flexDirection: 'row', justifyContent: 'space-between',
     alignItems: 'center', paddingVertical: 12,
-    borderBottomWidth: 1, borderBottomColor: '#3a3a5e',
+    borderBottomWidth: 1, borderBottomColor: '#1a2332',
   },
   scoreLabel: { color: '#888', fontSize: 15 },
   scoreValue: { color: '#ffffff', fontSize: 18, fontWeight: 'bold', marginHorizontal: 10 },
@@ -278,11 +278,11 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   decreaseBtn: { backgroundColor: '#e74c3c33' },
-  increaseBtn: { backgroundColor: '#2ecc7133' },
+  increaseBtn: { backgroundColor: '#00d4aa33' },
   adjustBtnText: { color: '#ffffff', fontSize: 14, fontWeight: 'bold' },
   detailRow: {
     flexDirection: 'row', justifyContent: 'space-between',
-    paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#3a3a5e',
+    paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#1a2332',
   },
   detailLabel: { color: '#888', fontSize: 15 },
   detailValue: { color: '#ffffff', fontSize: 15, fontWeight: '600', flex: 1, textAlign: 'right' },

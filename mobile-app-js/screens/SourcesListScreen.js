@@ -52,7 +52,7 @@ export default function SourcesListScreen({ navigation }) {
     const matchesFilter = activeFilter === 'All' ||
                           (source.sourceCategory || '').toLowerCase() === activeFilter.toLowerCase();
     return matchesSearch && matchesFilter;
-  });
+  }).sort((a, b) => b.overallScore - a.overallScore);
 
   const getStatusColor = (status) => {
     if (status === 'verified') return '#2ecc71';
@@ -162,7 +162,7 @@ export default function SourcesListScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+  container: { flex: 1, backgroundColor: '#0a0f1e' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -172,17 +172,17 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   title: { fontSize: 32, fontWeight: 'bold', color: '#ffffff' },
-  subtitle: { fontSize: 14, color: '#9b59b6', marginTop: 2 },
+  subtitle: { fontSize: 14, color: '#00d4aa', marginTop: 2 },
   shieldButton: {
     width: 45, height: 45, borderRadius: 22,
-    backgroundColor: '#2a2a3e',
+    backgroundColor: '#1a2332',
     alignItems: 'center', justifyContent: 'center',
   },
   shieldIcon: { fontSize: 20 },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a2a3e',
+    backgroundColor: '#1a2332',
     marginHorizontal: 20,
     borderRadius: 25,
     paddingHorizontal: 15,
@@ -194,46 +194,46 @@ const styles = StyleSheet.create({
   filterContainer: { paddingHorizontal: 20, marginBottom: 15 },
   filterTab: {
     paddingHorizontal: 18, paddingVertical: 8,
-    borderRadius: 20, backgroundColor: '#2a2a3e', marginRight: 10,
+    borderRadius: 20, backgroundColor: '#1a2332', marginRight: 10,
   },
-  activeFilterTab: { backgroundColor: '#9b59b6' },
+  activeFilterTab: { backgroundColor: '#00d4aa' },
   filterText: { color: '#888', fontSize: 14 },
-  activeFilterText: { color: '#ffffff', fontWeight: 'bold' },
+  activeFilterText: { color: '#000000', fontWeight: 'bold' },
   sourcesList: { paddingHorizontal: 20 },
   sourceCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a2a3e',
+    backgroundColor: '#111827',
     borderRadius: 15,
     padding: 15,
     marginBottom: 12,
   },
   sourceLogo: {
     width: 50, height: 50, borderRadius: 10,
-    backgroundColor: '#9b59b6',
+    backgroundColor: '#00d4aa',
     alignItems: 'center', justifyContent: 'center',
     marginRight: 15,
   },
-  sourceLogoText: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
+  sourceLogoText: { color: '#000000', fontSize: 20, fontWeight: 'bold' },
   sourceInfo: { flex: 1 },
   sourceNameRow: { flexDirection: 'row', alignItems: 'center' },
   sourceName: { color: '#ffffff', fontSize: 16, fontWeight: 'bold', marginRight: 6 },
-  verifiedBadge: { color: '#9b59b6', fontSize: 16, fontWeight: 'bold' },
-  sourceCategory: { color: '#9b59b6', fontSize: 12, marginTop: 3, fontWeight: '600' },
+  verifiedBadge: { color: '#00d4aa', fontSize: 16, fontWeight: 'bold' },
+  sourceCategory: { color: '#00d4aa', fontSize: 12, marginTop: 3, fontWeight: '600' },
   scoreContainer: {
     width: 55, height: 55, borderRadius: 27,
-    borderWidth: 3, borderColor: '#9b59b6',
+    borderWidth: 3, borderColor: '#00d4aa',
     alignItems: 'center', justifyContent: 'center',
   },
   scoreText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold' },
   fab: {
     position: 'absolute', bottom: 30, right: 25,
     width: 60, height: 60, borderRadius: 30,
-    backgroundColor: '#9b59b6',
+    backgroundColor: '#00d4aa',
     alignItems: 'center', justifyContent: 'center',
     elevation: 5,
   },
-  fabText: { color: '#ffffff', fontSize: 30, fontWeight: 'bold' },
+  fabText: { color: '#000000', fontSize: 30, fontWeight: 'bold' },
   emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 80 },
   emptyText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold' },
   emptySubtext: { color: '#888', fontSize: 14, marginTop: 8 },

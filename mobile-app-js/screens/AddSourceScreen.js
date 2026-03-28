@@ -194,7 +194,7 @@ export default function AddSourceScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+  container: { flex: 1, backgroundColor: '#0a0f1e' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -203,35 +203,35 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 15,
   },
-  backButton: { color: '#9b59b6', fontSize: 16, fontWeight: '600' },
+  backButton: { color: '#00d4aa', fontSize: 16, fontWeight: '600' },
   title: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
   form: { paddingHorizontal: 20, marginTop: 10 },
   label: { color: '#ffffff', fontSize: 14, fontWeight: '600', marginBottom: 8, marginTop: 15 },
   input: {
-    backgroundColor: '#2a2a3e',
+    backgroundColor: '#111827',
     borderRadius: 12,
     padding: 15,
     color: '#ffffff',
     fontSize: 15,
     borderWidth: 1,
-    borderColor: '#3a3a5e',
+    borderColor: '#1a2332',
   },
   categoryContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 5 },
   categoryChip: {
     paddingHorizontal: 18, paddingVertical: 10,
-    borderRadius: 20, backgroundColor: '#2a2a3e',
-    borderWidth: 1, borderColor: '#3a3a5e',
+    borderRadius: 20, backgroundColor: '#111827',
+    borderWidth: 1, borderColor: '#1a2332',
   },
-  activeCategoryChip: { backgroundColor: '#9b59b6', borderColor: '#9b59b6' },
+  activeCategoryChip: { backgroundColor: '#00d4aa', borderColor: '#00d4aa' },
   categoryChipText: { color: '#888', fontSize: 14 },
-  activeCategoryChipText: { color: '#ffffff', fontWeight: 'bold' },
+  activeCategoryChipText: { color: '#000000', fontWeight: 'bold' },
   addButton: {
-    backgroundColor: '#9b59b6',
+    backgroundColor: '#00d4aa',
     borderRadius: 12,
     padding: 18,
     alignItems: 'center',
     marginTop: 30,
     marginBottom: 40,
   },
-  addButtonText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold' },
+  addButtonText: { color: '#000000', fontSize: 18, fontWeight: 'bold' },
 });

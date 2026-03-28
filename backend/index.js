@@ -24,4 +24,9 @@ mongoose.connect(process.env.MONGO_URI)
   })
   .catch((error) => {
     console.log('❌ MongoDB connection failed:', error.message);
+    console.log('⚠️ Starting backend in in-memory demo mode (data will reset on restart).');
+    process.env.USE_MEMORY_STORE = 'true';
+    app.listen(process.env.PORT, () => {
+      console.log(`🚀 Server running on port ${process.env.PORT} (memory mode)`);
+    });
   });
