@@ -39,13 +39,6 @@ async function verifyClaim(claim) {
             // Assume false if mixed/ambiguous but heavily fact-checked
             outcome = falseCount > 0 ? "Likely False" : "Unverifiable";
         }
-    } else {
-        // Fallback directly to OpenAI
-        const aiResult = await verifyWithOpenAI(normalized);
-        outcome = aiResult.outcome;
-        if (aiResult.reasoning) {
-            detected_Issues.push(`AI Analysis: ${aiResult.reasoning}`);
-        }
     }
 
     return {
