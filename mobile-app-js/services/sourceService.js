@@ -1,11 +1,14 @@
 import axios from 'axios';
 
 // 💡 Your computer's IP address
-const BASE_URL = 'https://prothoracic-holily-camila.ngrok-free.dev ';
+const BASE_URL = 'http://192.168.1.190:5001/api';
 
 const api = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,
+  headers: {
+    'ngrok-skip-browser-warning': 'true',
+  },
 });
 
 // GET all sources

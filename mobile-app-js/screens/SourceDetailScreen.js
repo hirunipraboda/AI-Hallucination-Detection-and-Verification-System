@@ -212,6 +212,14 @@ export default function SourceDetailScreen({ navigation, route }) {
               {currentSource.status}
             </Text>
           </View>
+          {currentSource.vetNote ? (
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Vet Note</Text>
+              <Text style={[styles.detailValue, { color: '#00d4aa' }]}>
+                {currentSource.vetNote}
+              </Text>
+            </View>
+          ) : null}
         </View>
 
       </ScrollView>

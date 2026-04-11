@@ -44,6 +44,35 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// 💡 AUTO-VETTING FUNCTION
+const autoVetSource = (url) => {
+  try {
+    const domain = new URL(url).hostname.toLowerCase();
+    if (domain.endsWith('.gov') || domain.endsWith('.gov.lk') || domain.endsWith('.gov.uk')) {
+      return { authorityScore: 95, accuracyScore: 90, recencyScore: 85,
+               vetNote: 'Government domain - High trust' };
+    }
+    if (domain.endsWith('.edu') || domain.endsWith('.ac.lk') || domain.endsWith('.ac.uk') ||
+        domain.includes('pubmed') || domain.includes('scholar')) {
+      return { authorityScore: 90, accuracyScore: 88, recencyScore: 80,
+               vetNote: 'Academic domain - High trust' };
+    }
+    if (domain.includes('reuters') || domain.includes('bbc') || domain.includes('who.int') ||
+        domain.includes('un.org') || domain.includes('nature.com')) {
+      return { authorityScore: 88, accuracyScore: 85, recencyScore: 82,
+               vetNote: 'Trusted web source - High trust' };
+    }
+    if (domain.endsWith('.org')) {
+      return { authorityScore: 75, accuracyScore: 70, recencyScore: 70,
+               vetNote: 'Organisation domain - Medium trust' };
+    }
+    return { authorityScore: null, accuracyScore: null, recencyScore: null,
+             vetNote: 'Unknown domain - Manual review recommended' };
+  } catch (e) {
+    return { authorityScore: null, accuracyScore: null, recencyScore: null,
+             vetNote: 'Invalid URL' };
+  }
+};
 // 💡 POST create a new source
 router.post('/', async (req, res) => {
   try {
@@ -58,13 +87,17 @@ router.post('/', async (req, res) => {
     const normalizedName = String(sourceName).trim();
     const normalizedUrl = String(sourceURL).trim();
     const normalizedCategory = String(sourceCategory).trim();
+    // Run auto-vetting on the URL
+    const vetResult = autoVetSource(normalizedUrl);
+
     const normalizedScores = {
-      authorityScore: clampScore(authorityScore),
-      accuracyScore: clampScore(accuracyScore),
-      recencyScore: clampScore(recencyScore),
+        authorityScore: clampScore(vetResult.authorityScore ?? authorityScore),
+        accuracyScore: clampScore(vetResult.accuracyScore ?? accuracyScore),
+        recencyScore: clampScore(vetResult.recencyScore ?? recencyScore),
     };
     const overallScore = calculateOverallScore(normalizedScores);
     const status = deriveStatus(overallScore);
+    const vetNote = vetResult.vetNote;
 
     if (isMemoryMode()) {
       const now = new Date().toISOString();
@@ -78,9 +111,11 @@ router.post('/', async (req, res) => {
         recencyScore: normalizedScores.recencyScore,
         overallScore,
         status,
+        vetNote,
         createdAt: now,
         updatedAt: now,
       };
+      
       inMemorySources.push(created);
       inMemoryEvidence.push({
         _id: randomUUID(),
@@ -104,7 +139,8 @@ router.post('/', async (req, res) => {
       recencyScore: normalizedScores.recencyScore,
       overallScore,
       status,
-    });
+      vetNote,
+     });
     const savedCredibility = await sourceCredibility.save();
 
     // Save to evidence_sources
@@ -237,7 +273,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Source not found' });
     }
 
-    // Per assignment rubric: delete unreliable sources.
+    //  delete unreliable sources.
     if (existing.status !== 'unreliable') {
       return res.status(400).json({ message: 'Only unreliable sources can be deleted.' });
     }

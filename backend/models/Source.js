@@ -76,6 +76,10 @@ const sourceCredibilitySchema = new mongoose.Schema({
     enum: ['verified', 'unverified', 'unreliable'],
     default: 'unverified',
   },
+  vetNote: {
+    type: String,
+    default: 'Manual review recommended',
+  },
 }, { timestamps: true });
 
 const EvidenceSource = mongoose.model('evidence_sources', evidenceSourceSchema);
