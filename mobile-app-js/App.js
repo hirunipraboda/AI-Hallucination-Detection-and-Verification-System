@@ -6,6 +6,7 @@ import { Text } from 'react-native';
 import SourcesListScreen from './screens/SourcesListScreen';
 import AddSourceScreen from './screens/AddSourceScreen';
 import SourceDetailScreen from './screens/SourceDetailScreen';
+import AnalyticsScreen from './screens/AnalyticsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -44,10 +45,11 @@ export default function App() {
           options={{ tabBarIcon: () => <Text>🔍</Text> }}
         />
         <Tab.Screen
-          name="History"
-          component={SourcesListScreen}
-          options={{ tabBarIcon: () => <Text>🕐</Text> }}
+          name="Analytics"
+          component={AnalyticsScreen}
+          options={{ tabBarIcon: () => <Text>📊</Text> }}
         />
+        
         <Tab.Screen
           name="Settings"
           component={SourcesListScreen}
