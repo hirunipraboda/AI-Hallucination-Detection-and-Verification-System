@@ -28,21 +28,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 💡 GET one source by ID
-router.get('/:id', async (req, res) => {
-  try {
-    if (isMemoryMode()) {
-      const source = inMemorySources.find((s) => s._id === req.params.id);
-      if (!source) return res.status(404).json({ message: 'Source not found' });
-      return res.json(source);
-    }
-    const source = await SourceCredibility.findById(req.params.id);
-    if (!source) return res.status(404).json({ message: 'Source not found' });
-    res.json(source);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+
 
 // 💡 AUTO-VETTING FUNCTION
 const autoVetSource = (url) => {
@@ -115,7 +101,7 @@ router.post('/', async (req, res) => {
         createdAt: now,
         updatedAt: now,
       };
-      
+
       inMemorySources.push(created);
       inMemoryEvidence.push({
         _id: randomUUID(),
@@ -286,4 +272,97 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// 💡 GET source credibility by URL
+// This endpoint is used by other components to check a source's credibility
+// Example: GET /api/sources/check?url=https://www.gov.lk
+router.get('/check', async (req, res) => {
+  try {
+    const { url } = req.query;
+
+    if (!url) {
+      return res.status(400).json({ message: 'URL parameter is required. Use ?url=https://example.com' });
+    }
+
+    if (!isValidHttpUrl(url)) {
+      return res.status(400).json({ message: 'Please provide a valid URL starting with http:// or https://' });
+    }
+
+    // 💡 First check if this URL already exists in our database
+    if (isMemoryMode()) {
+      const existing = inMemorySources.find(s => 
+        s.sourceURL.toLowerCase() === url.toLowerCase()
+      );
+      if (existing) {
+        return res.json({
+          url: existing.sourceURL,
+          sourceName: existing.sourceName,
+          credibilityScore: existing.overallScore,
+          authorityScore: existing.authorityScore,
+          accuracyScore: existing.accuracyScore,
+          recencyScore: existing.recencyScore,
+          status: existing.status,
+          category: existing.sourceCategory,
+          vetNote: existing.vetNote,
+          source: 'database',
+        });
+      }
+    } else {
+      const existing = await SourceCredibility.findOne({ 
+        sourceURL: { $regex: new RegExp(url, 'i') } 
+      });
+      if (existing) {
+        return res.json({
+          url: existing.sourceURL,
+          sourceName: existing.sourceName,
+          credibilityScore: existing.overallScore,
+          authorityScore: existing.authorityScore,
+          accuracyScore: existing.accuracyScore,
+          recencyScore: existing.recencyScore,
+          status: existing.status,
+          category: existing.sourceCategory,
+          vetNote: existing.vetNote,
+          source: 'database',
+        });
+      }
+    }
+
+    // 💡 GET one source by ID
+router.get('/:id', async (req, res) => {
+  try {
+    if (isMemoryMode()) {
+      const source = inMemorySources.find((s) => s._id === req.params.id);
+      if (!source) return res.status(404).json({ message: 'Source not found' });
+      return res.json(source);
+    }
+    const source = await SourceCredibility.findById(req.params.id);
+    if (!source) return res.status(404).json({ message: 'Source not found' });
+    res.json(source);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+    // 💡 If not in database, auto-vet the URL on the fly
+    const vetResult = autoVetSource(url);
+    const overallScore = Math.round(
+      (vetResult.authorityScore + vetResult.accuracyScore + vetResult.recencyScore) / 3
+    );
+
+    return res.json({
+      url,
+      sourceName: 'Unknown Source',
+      credibilityScore: overallScore || 50,
+      authorityScore: vetResult.authorityScore || 50,
+      accuracyScore: vetResult.accuracyScore || 50,
+      recencyScore: vetResult.recencyScore || 50,
+      status: overallScore >= 70 ? 'verified' : overallScore >= 40 ? 'unverified' : 'unreliable',
+      category: 'Unknown',
+      vetNote: vetResult.vetNote || 'Not in database - Auto vetted',
+      source: 'auto-vetted',
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 module.exports = router;
