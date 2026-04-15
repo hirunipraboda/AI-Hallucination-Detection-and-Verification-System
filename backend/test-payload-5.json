@@ -1,0 +1,68 @@
+{
+  "responseId": "policy-report-001",
+  "originalText": "The briefing asserts that the new infrastructure plan will create 1 million jobs within the next year, cut average commute times by 40%, and be fully funded without increasing taxes or public debt.",
+  "claims": [
+    { "_id": "p1", "claimText": "create 1 million jobs within the next year", "startIndex": 44, "endIndex": 92 },
+    { "_id": "p2", "claimText": "cut average commute times by 40%", "startIndex": 98, "endIndex": 136 },
+    { "_id": "p3", "claimText": "fully funded without increasing taxes or public debt", "startIndex": 146, "endIndex": 204 }
+  ],
+  "verificationResults": [
+    {
+      "claimId": "p1",
+      "status": "unverifiable",
+      "sources": [
+        {
+          "name": "Ministry of Labor Forecast",
+          "credibility": 88,
+          "url": "https://gov.example/labor-forecast",
+          "evidence": "Projects job creation but with wide uncertainty intervals.",
+          "category": "government"
+        }
+      ]
+    },
+    {
+      "claimId": "p2",
+      "status": "contradicted",
+      "sources": [
+        {
+          "name": "Transport Modeling Report",
+          "credibility": 92,
+          "url": "https://transport.example/modeling",
+          "evidence": "Estimated commute reduction between 8–15% in major cities.",
+          "category": "academic"
+        }
+      ],
+      "summary": "Impact on commute times is overstated relative to official modeling."
+    },
+    {
+      "claimId": "p3",
+      "status": "disputed",
+      "sources": [
+        {
+          "name": "Budget Office Analysis",
+          "credibility": 95,
+          "url": "https://budget.example/analysis",
+          "evidence": "Financing mix includes new bond issuance and reallocated taxes.",
+          "category": "government"
+        },
+        {
+          "name": "Policy Fact-Check",
+          "credibility": 80,
+          "url": "https://factcheck.example/infrastructure",
+          "evidence": "Experts disagree on long-term debt impact.",
+          "category": "fact-checker"
+        }
+      ]
+    }
+  ],
+  "scores": {
+    "confidence": 52,
+    "risk": "Medium",
+    "factors": {
+      "verificationRate": 20,
+      "sourceCredibility": 90,
+      "sourceConsensus": 45,
+      "claimSpecificity": 78
+    }
+  }
+}

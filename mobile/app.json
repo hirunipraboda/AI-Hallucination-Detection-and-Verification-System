@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Explanation Module",
+    "slug": "explanation-module",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true, "bundleIdentifier": "com.sliit.explanationmodule" },
+    "android": { "package": "com.sliit.explanationmodule" }
+  }
+}

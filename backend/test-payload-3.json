@@ -1,0 +1,68 @@
+{
+  "responseId": "climate-report-001",
+  "originalText": "The article states that global CO2 emissions dropped by 25% in 2023 compared to 2019 levels. It also claims that 90% of this reduction came from the aviation sector alone, and that the Arctic sea ice fully recovered to levels observed in the 1980s.",
+  "claims": [
+    { "_id": "cl1", "claimText": "global CO2 emissions dropped by 25% in 2023 compared to 2019 levels", "startIndex": 22, "endIndex": 111 },
+    { "_id": "cl2", "claimText": "90% of this reduction came from the aviation sector alone", "startIndex": 127, "endIndex": 189 },
+    { "_id": "cl3", "claimText": "Arctic sea ice fully recovered to levels observed in the 1980s", "startIndex": 203, "endIndex": 268 }
+  ],
+  "verificationResults": [
+    {
+      "claimId": "cl1",
+      "status": "disputed",
+      "sources": [
+        {
+          "name": "IEA Emissions Report 2023",
+          "credibility": 94,
+          "url": "https://iea.org/emissions2023",
+          "evidence": "Reports a smaller reduction concentrated in specific sectors.",
+          "category": "international"
+        },
+        {
+          "name": "News Blog",
+          "credibility": 60,
+          "url": "https://example.com/climate-blog",
+          "evidence": "Claims dramatic 25% drop without citing underlying data.",
+          "category": "news"
+        }
+      ],
+      "summary": "Magnitude of global reduction is exaggerated and not consistently reported."
+    },
+    {
+      "claimId": "cl2",
+      "status": "contradicted",
+      "sources": [
+        {
+          "name": "ICAO Aviation Emissions Factsheet",
+          "credibility": 92,
+          "url": "https://icao.int/emissions",
+          "evidence": "Aviation accounts for a much smaller share of global CO2 reduction.",
+          "category": "international"
+        }
+      ]
+    },
+    {
+      "claimId": "cl3",
+      "status": "contradicted",
+      "sources": [
+        {
+          "name": "NSIDC Arctic Sea Ice Data",
+          "credibility": 98,
+          "url": "https://nsidc.org/arcticseaice",
+          "evidence": "No evidence of full recovery to 1980s ice extent.",
+          "category": "academic"
+        }
+      ]
+    }
+  ],
+  "scores": {
+    "confidence": 40,
+    "risk": "High",
+    "factors": {
+      "verificationRate": 20,
+      "sourceCredibility": 85,
+      "sourceConsensus": 35,
+      "claimSpecificity": 65
+    }
+  }
+}

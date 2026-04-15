@@ -1,0 +1,68 @@
+{
+  "responseId": "test-report-001",
+  "originalText": "In the latest fiscal update, the company reported that revenue grew by 12% year-over-year, meeting most analyst expectations. However, the report also suggested that operating margins increased to 45% despite rising labor costs. Furthermore, the CEO's claim that over 500 new patents were filed in Q3 seems inconsistent with public filings which show a slower R&D pace.",
+  "claims": [
+    { "_id": "c1", "claimText": "revenue grew by 12% year-over-year", "startIndex": 50, "endIndex": 90 },
+    { "_id": "c2", "claimText": "operating margins increased to 45%", "startIndex": 130, "endIndex": 165 },
+    { "_id": "c3", "claimText": "over 500 new patents were filed in Q3", "startIndex": 210, "endIndex": 255 }
+  ],
+  "verificationResults": [
+    {
+      "claimId": "c1",
+      "status": "verified",
+      "sources": [
+        {
+          "name": "SEC Form 10-Q (Q3)",
+          "credibility": 95,
+          "url": "https://www.sec.gov/example",
+          "evidence": "Revenue increased by 12.3% YoY as reported in filing.",
+          "category": "government"
+        }
+      ]
+    },
+    {
+      "claimId": "c2",
+      "status": "contradicted",
+      "sources": [
+        {
+          "name": "Quarterly Report",
+          "credibility": 90,
+          "url": "https://example.com/report",
+          "evidence": "Operating margins actually decreased to 28.5% due to labor costs.",
+          "category": "corporate"
+        }
+      ],
+      "summary": "The claim contradicts official financial statements."
+    },
+    {
+      "claimId": "c3",
+      "status": "disputed",
+      "sources": [
+        {
+          "name": "Patent Office Database",
+          "credibility": 98,
+          "url": "https://uspto.gov",
+          "evidence": "Only 320 patents were filed in Q3.",
+          "category": "government"
+        },
+        {
+          "name": "Company Press Release",
+          "credibility": 70,
+          "url": "https://company.com/news",
+          "evidence": "CEO mentioned aggressive patent filing, but numbers not specified.",
+          "category": "news"
+        }
+      ]
+    }
+  ],
+  "scores": {
+    "confidence": 74,
+    "risk": "Medium",
+    "factors": {
+      "verificationRate": 33,
+      "sourceCredibility": 88,
+      "sourceConsensus": 60,
+      "claimSpecificity": 75
+    }
+  }
+}

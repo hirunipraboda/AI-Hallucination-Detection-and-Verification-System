@@ -1,0 +1,61 @@
+{
+  "responseId": "med-report-001",
+  "originalText": "A recent meta-analysis claims that a daily intake of 2000 IU of vitamin D reduces the risk of type 2 diabetes by 30%. It also states that more than 70% of adults are currently deficient in vitamin D and that supplementation completely eliminates seasonal flu.",
+  "claims": [
+    { "_id": "m1", "claimText": "2000 IU of vitamin D reduces risk of type 2 diabetes by 30%", "startIndex": 30, "endIndex": 111 },
+    { "_id": "m2", "claimText": "more than 70% of adults are currently deficient in vitamin D", "startIndex": 126, "endIndex": 199 },
+    { "_id": "m3", "claimText": "supplementation completely eliminates seasonal flu", "startIndex": 214, "endIndex": 266 }
+  ],
+  "verificationResults": [
+    {
+      "claimId": "m1",
+      "status": "verified",
+      "sources": [
+        {
+          "name": "New England Journal of Medicine",
+          "credibility": 96,
+          "url": "https://nejm.org/example-vitd-diabetes",
+          "evidence": "Large RCT shows 26–32% relative risk reduction in high-risk groups.",
+          "category": "academic"
+        }
+      ]
+    },
+    {
+      "claimId": "m2",
+      "status": "unverifiable",
+      "sources": [
+        {
+          "name": "Global Nutrition Report",
+          "credibility": 89,
+          "url": "https://globalnutritionreport.org",
+          "evidence": "Vitamin D deficiency prevalence varies widely by region and age.",
+          "category": "international"
+        }
+      ]
+    },
+    {
+      "claimId": "m3",
+      "status": "contradicted",
+      "sources": [
+        {
+          "name": "CDC Seasonal Flu Guidelines",
+          "credibility": 97,
+          "url": "https://cdc.gov/flu",
+          "evidence": "Supplementation may support immunity but does not eliminate flu risk.",
+          "category": "government"
+        }
+      ],
+      "summary": "Overstates the benefits of supplementation beyond available evidence."
+    }
+  ],
+  "scores": {
+    "confidence": 68,
+    "risk": "Medium",
+    "factors": {
+      "verificationRate": 40,
+      "sourceCredibility": 93,
+      "sourceConsensus": 55,
+      "claimSpecificity": 80
+    }
+  }
+}
