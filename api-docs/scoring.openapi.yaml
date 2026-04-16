@@ -1,0 +1,327 @@
+openapi: 3.0.3
+info:
+  title: Confidence and Hallucination Scoring API
+  version: 1.0.0
+  description: >
+    API for generating and managing confidence scores and hallucination risk
+    levels for AI responses.
+
+servers:
+  - url: http://localhost:4000
+    description: Local development server
+
+paths:
+  /api/scoring:
+    post:
+      summary: Generate confidence and hallucination risk score
+      description: Create a new scoring record for an AI response.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateScoringRequest'
+      responses:
+        '201':
+          description: Scoring record created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoringResponse'
+        '400':
+          description: Validation error
+    get:
+      summary: Search and filter scoring records
+      description: >
+        Search scoring records with support for filters, pagination, and
+        sorting.
+      parameters:
+        - in: query
+          name: responseId
+          schema:
+            type: string
+          description: Partial match on responseId.
+        - in: query
+          name: minConfidence
+          schema:
+            type: number
+            format: float
+          description: Minimum confidence score (inclusive).
+        - in: query
+          name: maxConfidence
+          schema:
+            type: number
+            format: float
+          description: Maximum confidence score (inclusive).
+        - in: query
+          name: riskLevel
+          schema:
+            $ref: '#/components/schemas/HallucinationRiskLevel'
+          description: Filter by hallucination risk level.
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+          description: Filter records calculated at or after this date.
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+          description: Filter records calculated at or before this date.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          description: Page number for pagination.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: Page size for pagination.
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            default: calculatedAt
+          description: Field to sort by.
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort direction.
+      responses:
+        '200':
+          description: Paged list of scoring records
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScoringRecord'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+
+  /api/scoring/{responseId}:
+    get:
+      summary: Get scoring record by response ID
+      parameters:
+        - in: path
+          name: responseId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Scoring record found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoringResponse'
+        '404':
+          description: Scoring record not found
+
+  /api/scoring/{id}:
+    put:
+      summary: Recalculate score
+      description: >
+        Recalculate an existing scoring record using updated scores and/or
+        weights.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecalculateRequest'
+      responses:
+        '200':
+          description: Updated scoring record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoringResponse'
+        '400':
+          description: Validation error
+        '404':
+          description: Scoring record not found
+    delete:
+      summary: Soft delete scoring record
+      description: >
+        Soft delete a scoring record by marking it as deleted instead of
+        removing it from the database.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Scoring record soft-deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoringResponse'
+        '404':
+          description: Scoring record not found
+
+components:
+  schemas:
+    HallucinationRiskLevel:
+      type: string
+      enum:
+        - Low
+        - Medium
+        - High
+
+    WeightDistribution:
+      type: object
+      properties:
+        verificationWeight:
+          type: number
+        credibilityWeight:
+          type: number
+        consensusWeight:
+          type: number
+
+    ScoringFactors:
+      type: object
+      properties:
+        verificationScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        credibilityScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        consensusScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        weightDistribution:
+          $ref: '#/components/schemas/WeightDistribution'
+      required:
+        - verificationScore
+        - credibilityScore
+        - consensusScore
+        - weightDistribution
+
+    ScoringRecord:
+      type: object
+      properties:
+        _id:
+          type: string
+        responseId:
+          type: string
+        confidenceScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        hallucinationRiskLevel:
+          $ref: '#/components/schemas/HallucinationRiskLevel'
+        scoringFactors:
+          $ref: '#/components/schemas/ScoringFactors'
+        calculatedAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        isDeleted:
+          type: boolean
+
+    CreateScoringRequest:
+      type: object
+      properties:
+        responseId:
+          type: string
+        verificationScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        credibilityScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        consensusScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        weights:
+          type: object
+          properties:
+            verification:
+              type: number
+            credibility:
+              type: number
+            consensus:
+              type: number
+      required:
+        - responseId
+        - verificationScore
+        - credibilityScore
+        - consensusScore
+
+    RecalculateRequest:
+      type: object
+      properties:
+        verificationScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        credibilityScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        consensusScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        weights:
+          type: object
+          properties:
+            verification:
+              type: number
+            credibility:
+              type: number
+            consensus:
+              type: number
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    ScoringResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ScoringRecord'
+        error:
+          type: string
+          nullable: true
+
