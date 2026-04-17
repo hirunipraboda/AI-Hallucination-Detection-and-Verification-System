@@ -1,68 +1,68 @@
 {
-  "responseId": "climate-report-001",
-  "originalText": "The article states that global CO2 emissions dropped by 25% in 2023 compared to 2019 levels. It also claims that 90% of this reduction came from the aviation sector alone, and that the Arctic sea ice fully recovered to levels observed in the 1980s.",
+  "responseId": "policy-report-001",
+  "originalText": "The briefing asserts that the new infrastructure plan will create 1 million jobs within the next year, cut average commute times by 40%, and be fully funded without increasing taxes or public debt.",
   "claims": [
-    { "_id": "cl1", "claimText": "global CO2 emissions dropped by 25% in 2023 compared to 2019 levels", "startIndex": 22, "endIndex": 111 },
-    { "_id": "cl2", "claimText": "90% of this reduction came from the aviation sector alone", "startIndex": 127, "endIndex": 189 },
-    { "_id": "cl3", "claimText": "Arctic sea ice fully recovered to levels observed in the 1980s", "startIndex": 203, "endIndex": 268 }
+    { "_id": "p1", "claimText": "create 1 million jobs within the next year", "startIndex": 44, "endIndex": 92 },
+    { "_id": "p2", "claimText": "cut average commute times by 40%", "startIndex": 98, "endIndex": 136 },
+    { "_id": "p3", "claimText": "fully funded without increasing taxes or public debt", "startIndex": 146, "endIndex": 204 }
   ],
   "verificationResults": [
     {
-      "claimId": "cl1",
-      "status": "disputed",
+      "claimId": "p1",
+      "status": "unverifiable",
       "sources": [
         {
-          "name": "IEA Emissions Report 2023",
-          "credibility": 94,
-          "url": "https://iea.org/emissions2023",
-          "evidence": "Reports a smaller reduction concentrated in specific sectors.",
-          "category": "international"
-        },
-        {
-          "name": "News Blog",
-          "credibility": 60,
-          "url": "https://example.com/climate-blog",
-          "evidence": "Claims dramatic 25% drop without citing underlying data.",
-          "category": "news"
-        }
-      ],
-      "summary": "Magnitude of global reduction is exaggerated and not consistently reported."
-    },
-    {
-      "claimId": "cl2",
-      "status": "contradicted",
-      "sources": [
-        {
-          "name": "ICAO Aviation Emissions Factsheet",
-          "credibility": 92,
-          "url": "https://icao.int/emissions",
-          "evidence": "Aviation accounts for a much smaller share of global CO2 reduction.",
-          "category": "international"
+          "name": "Ministry of Labor Forecast",
+          "credibility": 88,
+          "url": "https://gov.example/labor-forecast",
+          "evidence": "Projects job creation but with wide uncertainty intervals.",
+          "category": "government"
         }
       ]
     },
     {
-      "claimId": "cl3",
+      "claimId": "p2",
       "status": "contradicted",
       "sources": [
         {
-          "name": "NSIDC Arctic Sea Ice Data",
-          "credibility": 98,
-          "url": "https://nsidc.org/arcticseaice",
-          "evidence": "No evidence of full recovery to 1980s ice extent.",
+          "name": "Transport Modeling Report",
+          "credibility": 92,
+          "url": "https://transport.example/modeling",
+          "evidence": "Estimated commute reduction between 8–15% in major cities.",
           "category": "academic"
+        }
+      ],
+      "summary": "Impact on commute times is overstated relative to official modeling."
+    },
+    {
+      "claimId": "p3",
+      "status": "disputed",
+      "sources": [
+        {
+          "name": "Budget Office Analysis",
+          "credibility": 95,
+          "url": "https://budget.example/analysis",
+          "evidence": "Financing mix includes new bond issuance and reallocated taxes.",
+          "category": "government"
+        },
+        {
+          "name": "Policy Fact-Check",
+          "credibility": 80,
+          "url": "https://factcheck.example/infrastructure",
+          "evidence": "Experts disagree on long-term debt impact.",
+          "category": "fact-checker"
         }
       ]
     }
   ],
   "scores": {
-    "confidence": 40,
-    "risk": "High",
+    "confidence": 52,
+    "risk": "Medium",
     "factors": {
       "verificationRate": 20,
-      "sourceCredibility": 85,
-      "sourceConsensus": 35,
-      "claimSpecificity": 65
+      "sourceCredibility": 90,
+      "sourceConsensus": 45,
+      "claimSpecificity": 78
     }
   }
 }

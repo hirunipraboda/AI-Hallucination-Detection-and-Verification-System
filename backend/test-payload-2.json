@@ -2,9 +2,24 @@
   "responseId": "med-report-001",
   "originalText": "A recent meta-analysis claims that a daily intake of 2000 IU of vitamin D reduces the risk of type 2 diabetes by 30%. It also states that more than 70% of adults are currently deficient in vitamin D and that supplementation completely eliminates seasonal flu.",
   "claims": [
-    { "_id": "m1", "claimText": "2000 IU of vitamin D reduces risk of type 2 diabetes by 30%", "startIndex": 30, "endIndex": 111 },
-    { "_id": "m2", "claimText": "more than 70% of adults are currently deficient in vitamin D", "startIndex": 126, "endIndex": 199 },
-    { "_id": "m3", "claimText": "supplementation completely eliminates seasonal flu", "startIndex": 214, "endIndex": 266 }
+    {
+      "_id": "m1",
+      "claimText": "2000 IU of vitamin D reduces risk of type 2 diabetes by 30%",
+      "startIndex": 30,
+      "endIndex": 111
+    },
+    {
+      "_id": "m2",
+      "claimText": "more than 70% of adults are currently deficient in vitamin D",
+      "startIndex": 126,
+      "endIndex": 199
+    },
+    {
+      "_id": "m3",
+      "claimText": "supplementation completely eliminates seasonal flu",
+      "startIndex": 214,
+      "endIndex": 266
+    }
   ],
   "verificationResults": [
     {
