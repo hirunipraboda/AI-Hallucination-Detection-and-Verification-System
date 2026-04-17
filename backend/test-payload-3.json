@@ -2,9 +2,24 @@
   "responseId": "policy-report-001",
   "originalText": "The briefing asserts that the new infrastructure plan will create 1 million jobs within the next year, cut average commute times by 40%, and be fully funded without increasing taxes or public debt.",
   "claims": [
-    { "_id": "p1", "claimText": "create 1 million jobs within the next year", "startIndex": 44, "endIndex": 92 },
-    { "_id": "p2", "claimText": "cut average commute times by 40%", "startIndex": 98, "endIndex": 136 },
-    { "_id": "p3", "claimText": "fully funded without increasing taxes or public debt", "startIndex": 146, "endIndex": 204 }
+    {
+      "_id": "p1",
+      "claimText": "create 1 million jobs within the next year",
+      "startIndex": 44,
+      "endIndex": 92
+    },
+    {
+      "_id": "p2",
+      "claimText": "cut average commute times by 40%",
+      "startIndex": 98,
+      "endIndex": 136
+    },
+    {
+      "_id": "p3",
+      "claimText": "fully funded without increasing taxes or public debt",
+      "startIndex": 146,
+      "endIndex": 204
+    }
   ],
   "verificationResults": [
     {
