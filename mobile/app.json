@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "TruthLens",
+    "slug": "truthlens-mobile",
+    "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#041824"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.truthlens.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#041824"
+      },
+      "package": "com.truthlens.mobile"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": []
+  }
+}
