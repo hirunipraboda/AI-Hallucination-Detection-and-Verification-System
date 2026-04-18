@@ -1,0 +1,41 @@
+[
+  {
+    "_id": "mock-1",
+    "responseId": "ai_response_001",
+    "confidenceScore": 85,
+    "hallucinationRiskLevel": "Low",
+    "scoringFactors": {
+      "verificationScore": 90,
+      "credibilityScore": 80,
+      "consensusScore": 82,
+      "weightDistribution": {
+        "verificationWeight": 0.5,
+        "credibilityWeight": 0.3,
+        "consensusWeight": 0.2
+      }
+    },
+    "calculatedAt": "2026-02-27T10:00:00.000Z",
+    "updatedAt": "2026-02-27T10:00:00.000Z",
+    "isDeleted": false
+  },
+  {
+    "_id": "mock-2",
+    "responseId": "ai_response_002",
+    "confidenceScore": 62,
+    "hallucinationRiskLevel": "Medium",
+    "scoringFactors": {
+      "verificationScore": 65,
+      "credibilityScore": 60,
+      "consensusScore": 58,
+      "weightDistribution": {
+        "verificationWeight": 0.5,
+        "credibilityWeight": 0.3,
+        "consensusWeight": 0.2
+      }
+    },
+    "calculatedAt": "2026-02-26T15:30:00.000Z",
+    "updatedAt": "2026-02-26T15:30:00.000Z",
+    "isDeleted": false
+  }
+]
+
